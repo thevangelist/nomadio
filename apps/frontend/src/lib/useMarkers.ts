@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { api } from './api';
+import { apiFetch } from './api';
 
 export function useMarkers() {
   const [pending, setPending] = useState(false);
@@ -9,7 +9,7 @@ export function useMarkers() {
     setPending(true);
     setError(null);
     try {
-      const res = await fetch(api('/api/v1/markers'), {
+      const res = await apiFetch('/api/v1/markers', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ note }),

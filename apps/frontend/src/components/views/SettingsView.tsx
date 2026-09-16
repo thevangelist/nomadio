@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Settings } from '@nomadio/shared';
-import { api } from '@/lib/api';
+import { apiFetch, hasToken, setToken } from '@/lib/api';
 import { Card, Row } from '../Primitives';
 import Select from '../ui/Select';
 
@@ -9,14 +9,14 @@ export default function SettingsView() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(api('/api/v1/settings'))
+    apiFetch('/api/v1/settings')
       .then((r) => r.json())
       .then(setSettings)
       .catch(() => setError('could not load settings'));
   }, []);
 
   const patch = async (body: Partial<Settings>) => {
-    const res = await fetch(api('/api/v1/settings'), {
+    const res = await apiFetch('/api/v1/settings', {
       method: 'PATCH',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(body),
@@ -55,6 +55,25 @@ export default function SettingsView() {
         <Row k="Max latency" v={`${settings.thresholds.maxLatencyMs} ms`} />
         <Row k="Max packet loss" v={`${settings.thresholds.maxPacketLossPct} %`} />
         <Row k="Low battery" v={`${settings.thresholds.lowBatteryPct} %`} />
+      </Card>
+
+      <Card title="Access">
+        <div className="row">
+          <span className="k">
+            API token
+            <span className="sub">{hasToken() ? 'stored on this device' : 'not set — needed once the API is exposed'}</span>
+          </span>
+          <input
+            type="password"
+            placeholder="paste token"
+            style={{ maxWidth: 150 }}
+            onChange={(e) => setToken(e.target.value)}
+          />
+        </div>
+        <p className="note" style={{ marginTop: 8 }}>
+          Opening the dashboard with <span className="mono">?token=…</span> stores it and strips it from the
+          address bar, so a link is enough to set up a new device.
+        </p>
       </Card>
 
       <Card title="Automation">

@@ -1,8 +1,10 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import AppShell from '@/components/AppShell';
-import { loadRuntimeConfig } from '@/lib/api';
+import { adoptTokenFromUrl, loadRuntimeConfig } from '@/lib/api';
 import './globals.css';
+
+adoptTokenFromUrl();
 
 void loadRuntimeConfig().then(() =>
   createRoot(document.getElementById('root')!).render(

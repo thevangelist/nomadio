@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { DashboardState, WsMessage } from '@nomadio/shared';
-import { fetchState, wsUrl } from './api';
+import { fetchState, Unauthorized, wsUrl } from './api';
 
-export type Connection = 'connecting' | 'live' | 'polling' | 'down';
+export type Connection = 'connecting' | 'live' | 'polling' | 'down' | 'unauthorized';
 
 /**
  * WebSocket first, REST polling as a fallback: the dashboard usually rides the same bad link
@@ -27,7 +27,10 @@ export function useDashboard() {
             setState(s);
             setConnection((c) => (c === 'live' ? c : 'polling'));
           })
-          .catch(() => !disposed && setConnection('down'));
+          .catch((err) => {
+            if (disposed) return;
+            setConnection(err instanceof Unauthorized ? 'unauthorized' : 'down');
+          });
       run();
       poll = setInterval(run, 3000);
     };

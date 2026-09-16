@@ -83,9 +83,15 @@ export default function AppShell() {
         {state ? <h1 className="view-title">{ALL.find((t) => t.id === tab)!.label}</h1> : null}
         {!state ? (
           <div className="empty">
-            <h1 className={connection === 'down' ? 'crit-text' : undefined}>
-              {connection === 'down' ? 'No API' : 'Connecting'}
+            <h1 className={connection === 'down' || connection === 'unauthorized' ? 'crit-text' : undefined}>
+              {connection === 'unauthorized' ? 'Token required' : connection === 'down' ? 'No API' : 'Connecting'}
             </h1>
+            {connection === 'unauthorized' ? (
+              <p className="note">
+                The collector rejected this device. Open the dashboard once with{' '}
+                <span className="mono">?token=&lt;your API_TOKEN&gt;</span>, or paste it under Settings.
+              </p>
+            ) : null}
             {connection === 'down' ? (
               <>
                 <p className="note">
