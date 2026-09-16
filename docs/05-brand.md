@@ -52,6 +52,8 @@ Pure black and white; the status colours belong to the data, never to the logo.
 
 - `brand/marketing-banner.png` — 1280×720, mark + tagline, README header and social preview
 - `brand/logo.pdf` — vector original, black on white
+- `brand/icon.svg`, `brand/icon-maskable.svg` — app icon, full-bleed black; the maskable one
+  keeps the mark inside the safe zone
 - `brand/mark.svg` — the mark alone
 - `apps/frontend/public/icon.svg` — same mark as the PWA / maskable icon and favicon
 

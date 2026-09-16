@@ -28,7 +28,7 @@ export class MediaMtxStreamProvider implements StreamProvider {
     if (pathInfo === null) return unknownStream(this.id);
 
     const ready = pathInfo['ready'] === true;
-    const bytes = pick(pathInfo, 'bytesReceived');
+    const bytes = pick(pathInfo, 'bytesReceived', 'inboundBytes');
     const bitrateKbps = this.deriveBitrate(bytes, ready);
 
     if (!ready) {
@@ -45,7 +45,7 @@ export class MediaMtxStreamProvider implements StreamProvider {
       state: 'LIVE',
       bitrateKbps: srtKbps ?? bitrateKbps,
       fps: null, // MediaMTX reports tracks and codecs, not a frame rate
-      droppedFrames: null,
+      droppedFrames: pick(pathInfo, 'inboundFramesInError'),
       uploadKbps: srtKbps ?? bitrateKbps,
       latencyMs: srt ? pick(srt, 'msRTT') : null,
       packetLossPct: lossPct(lost, received),

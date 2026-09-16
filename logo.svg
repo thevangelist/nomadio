@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 336 336" fill="none" role="img" aria-label="Nomadio">
+  <title>Nomadio</title>
+  <rect width="336" height="336" fill="#000"/>
+  <g fill="#fff">
+    <path d="M64 0L64 38L270 279L270 24L238 25L238 200Z"/>
+    <path d="M64 56L64 312L98 312L98 135L270 335L270 295Z"/>
+  </g>
+</svg>

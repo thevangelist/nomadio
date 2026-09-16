@@ -1,9 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Nomadio">
-  <rect width="512" height="512" fill="#0b0e13"/>
-  <g fill="#ffffff">
-    <polygon points="150,92 200,92 362,420 312,420"/>
-    <rect x="150" y="140" width="40" height="292"/>
-    <rect x="322" y="80" width="40" height="292"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 360" role="img" aria-label="NomadIO">
+  <g fill="currentColor">
+    <polygon points="10,5 44,5 218,348 184,348"/>
+    <rect x="10" y="62" width="34" height="258"/>
+    <rect x="184" y="30" width="33" height="256"/>
   </g>
-  <polygon points="150,116 162,116 362,520 350,520" fill="#0b0e13"/>
+  <line x1="16" y1="-6" x2="196" y2="360" stroke="var(--logo-gap, #0a0a0a)" stroke-width="9"/>
 </svg>

@@ -1,6 +1,7 @@
-# Minimal ingest for one publisher. SRT is the point: it survives a mobile link
-# that RTMP gives up on, and it is the only protocol that reports RTT and loss.
+# Ingest for one publisher. SRT is the point: it survives a mobile link that RTMP
+# gives up on, and it is the only protocol here that reports RTT and loss.
 logLevel: info
+
 api: yes
 apiAddress: :9997
 
@@ -9,8 +10,21 @@ srtAddress: :8890
 rtmp: yes
 rtmpAddress: :1935
 
+# Publishing needs the credentials; reading and the stats API are open on the LAN,
+# because the whole box is expected to sit behind a tunnel, not on a port-forward.
+authInternalUsers:
+  - user: any
+    ips: []
+    permissions:
+      - action: read
+      - action: api
+      - action: metrics
+  - user: nomad
+    pass: change-me
+    ips: []
+    permissions:
+      - action: publish
+        path: live
+
 paths:
   live:
-    # Set both in .env and keep them out of screenshots.
-    publishUser: ${INGEST_USER}
-    publishPass: ${INGEST_PASS}
