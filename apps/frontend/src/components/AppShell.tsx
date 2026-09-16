@@ -54,7 +54,7 @@ export default function AppShell() {
       <div className="shell">
       <header className="appbar">
         <span className="brand">
-          <img src="/logo.svg" alt="" width={13} height={22} />
+          <img src="/logo.svg" alt="" width={20} height={20} />
           NomadIO
           <span className="crumb">{ALL.find((t) => t.id === tab)!.label}</span>
         </span>

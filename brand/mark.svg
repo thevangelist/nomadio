@@ -1,8 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 360" role="img" aria-label="NomadIO">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 336 336" fill="none" role="img" aria-label="NomadIO">
+  <title>NomadIO</title>
   <g fill="currentColor">
-    <polygon points="10,5 44,5 218,348 184,348"/>
-    <rect x="10" y="62" width="34" height="258"/>
-    <rect x="184" y="30" width="33" height="256"/>
+    <path d="M64 0L64 38L270 279L270 24L238 25L238 200Z"/>
+    <path d="M64 56L64 312L98 312L98 135L270 335L270 295Z"/>
   </g>
-  <line x1="16" y1="-6" x2="196" y2="360" stroke="var(--logo-gap, #0a0a0a)" stroke-width="9"/>
 </svg>

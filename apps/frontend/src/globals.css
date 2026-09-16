@@ -49,7 +49,7 @@ body {
   background: var(--surface);
 }
 .appbar .brand { display: flex; align-items: center; gap: var(--s2); font-weight: 700; letter-spacing: 0.12em; font-size: 14px; }
-.appbar .brand img { height: 20px; width: auto; }
+.appbar .brand img { width: 20px; height: 20px; }
 .appbar .crumb { display: none; color: var(--muted); font-size: 14px; font-weight: 400; letter-spacing: 0; }
 .appbar .status { display: flex; align-items: center; gap: var(--s2); color: var(--muted); font-size: 13px; }
 @media (min-width: 720px) { .appbar .crumb { display: inline; } }
