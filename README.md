@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="brand/marketing-banner.png" alt="NomadIO" width="720">
+  <img src="brand/marketing-banner.png" alt="NomadIO — I/O for creators on the move" width="860">
 </p>
 
 # NomadIO
@@ -24,10 +24,6 @@ It is deliberately not an encoder, a bonder or a mixer. Those markets are served
 sells is the honest instrument panel across all of them, and once that panel exists it is also
 the natural place to put the controls, the overlay and eventually the automation, because it is
 already the thing that knows the state of the whole chain.
-
-<p align="center">
-  <img src="docs/screenshot-mobile.png" alt="NomadIO on a phone" width="300">
-</p>
 
 ## Install and run
 

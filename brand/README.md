@@ -2,7 +2,9 @@
 
 | File | Use |
 | --- | --- |
-| `marketing-banner.png` | 1280×720 — README header, GitHub social preview, link previews |
+| `marketing-banner.png` | 2000×1125 — README header, GitHub social preview, link previews |
+| `banner.source.html` | How the banner is built. Re-render it with headless Chrome at 2400×1350 after a UI change, so the phone in it is never a stale screenshot |
+| `wordmark-card.png` | The original mark-and-tagline card, kept for square or text-only placements |
 | `mark.svg` | The mark alone, on the near-black background |
 
 The same mark ships as the app icon at `../apps/frontend/public/icon.svg` (PWA, maskable,
