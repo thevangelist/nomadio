@@ -36,7 +36,12 @@ export async function buildApp(cfg: Config) {
     settings: () => settings.get(),
   });
 
-  const fastify = Fastify({ loggerInstance: logger });
+  const fastify = Fastify({
+    loggerInstance: logger,
+    // A monitoring API takes tiny JSON bodies; anything larger is a mistake or an attack.
+    bodyLimit: 64 * 1024,
+    trustProxy: true,
+  });
   // Awaited: routes registered before the plugin is ready silently fall back to
   // plain HTTP handlers, and the websocket route then gets a Request, not a socket.
   await fastify.register(cors, { origin: cfg.CORS_ORIGIN === '*' ? true : cfg.CORS_ORIGIN.split(',') });

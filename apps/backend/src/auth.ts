@@ -1,5 +1,14 @@
+import { timingSafeEqual } from 'node:crypto';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { Config } from './config.js';
+
+/** Comparing tokens with === leaks their prefix through response timing. */
+const matches = (candidate: string | undefined | null, expected: string): boolean => {
+  if (typeof candidate !== 'string') return false;
+  const a = Buffer.from(candidate);
+  const b = Buffer.from(expected);
+  return a.length === b.length && timingSafeEqual(a, b);
+};
 
 const PUBLIC_PATHS = new Set(['/healthz', '/readyz']);
 
@@ -16,7 +25,7 @@ export function createAuthHook(cfg: Config) {
     const bearer = header?.startsWith('Bearer ') ? header.slice(7) : null;
     const query = typeof req.query === 'object' && req.query !== null ? (req.query as { token?: string }).token : undefined;
 
-    if (bearer === cfg.API_TOKEN || query === cfg.API_TOKEN) return;
+    if (matches(bearer, cfg.API_TOKEN) || matches(query, cfg.API_TOKEN)) return;
     await reply.code(401).send({ error: 'unauthorized' });
   };
 }

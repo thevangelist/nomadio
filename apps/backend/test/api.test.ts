@@ -92,3 +92,38 @@ describe('realtime', () => {
     expect(frame.type).toBe('state');
   });
 });
+
+describe('auth', () => {
+  it('rejects a token of the wrong length and the right prefix alike', async () => {
+    const guarded = await buildApp(
+      loadConfig({ STREAM_PROVIDER: 'mock', LOG_LEVEL: 'silent', API_TOKEN: 'a'.repeat(32) } as never),
+    );
+    await guarded.fastify.ready();
+
+    const call = (token?: string) =>
+      guarded.fastify.inject({
+        method: 'GET',
+        url: '/api/v1/status',
+        ...(token ? { headers: { authorization: `Bearer ${token}` } } : {}),
+      });
+
+    expect((await call()).statusCode).toBe(401);
+    expect((await call('a'.repeat(31))).statusCode).toBe(401);
+    expect((await call('b'.repeat(32))).statusCode).toBe(401);
+    expect((await call('a'.repeat(32))).statusCode).toBe(200);
+    // Health checks stay open so a container can be probed without a credential.
+    expect((await guarded.fastify.inject({ method: 'GET', url: '/healthz' })).statusCode).toBe(200);
+
+    await guarded.fastify.close();
+  });
+
+  it('accepts the token as a query parameter, which is all a websocket can carry', async () => {
+    const guarded = await buildApp(
+      loadConfig({ STREAM_PROVIDER: 'mock', LOG_LEVEL: 'silent', API_TOKEN: 'c'.repeat(32) } as never),
+    );
+    await guarded.fastify.ready();
+    const res = await guarded.fastify.inject({ method: 'GET', url: `/api/v1/status?token=${'c'.repeat(32)}` });
+    expect(res.statusCode).toBe(200);
+    await guarded.fastify.close();
+  });
+});
