@@ -3,9 +3,9 @@
   "private": true,
   "workspaces": ["packages/*", "apps/*"],
   "scripts": {
-    "dev": "npm run dev --workspace=@nomadio/backend & npm run dev --workspace=@nomadio/frontend",
-    "build": "npm run build --workspaces --if-present",
-    "test": "npm run test --workspaces --if-present",
+    "dev": "npm run build --workspace=@nomadio/shared && (npm run dev --workspace=@nomadio/backend & npm run dev --workspace=@nomadio/frontend)",
+    "build": "npm run build --workspace=@nomadio/shared && npm run build --workspaces --if-present",
+    "test": "npm run build --workspace=@nomadio/shared && npm run test --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present"
   }
 }

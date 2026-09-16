@@ -1,0 +1,8 @@
+#!/bin/sh
+# Sourced by nginx's entrypoint before the templates are rendered. Reads the
+# container's own DNS servers so the API upstream can be resolved per request
+# instead of once at startup, which is what lets nginx boot while the collector
+# is down. Works under Docker (127.0.0.11) and Podman alike.
+NOMADIO_RESOLVER="$(awk '/^nameserver/ { printf "%s ", $2 }' /etc/resolv.conf)"
+[ -n "$NOMADIO_RESOLVER" ] || NOMADIO_RESOLVER="127.0.0.11"
+export NOMADIO_RESOLVER

@@ -18,3 +18,29 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run typecheck
+
+  images:
+    # The images broke twice without anyone noticing, because nothing built them.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and smoke-test the collector image
+        run: |
+          docker build -f apps/backend/Dockerfile -t nomadio-backend:ci .
+          docker run -d --name backend -p 4000:4000 \
+            -e STREAM_PROVIDER=mock -e API_TOKEN=0123456789abcdef0123456789abcdef nomadio-backend:ci
+          for i in $(seq 1 20); do curl -fs localhost:4000/healthz && break || sleep 1; done
+          curl -fs localhost:4000/healthz
+          test "$(curl -s -o /dev/null -w '%{http_code}' localhost:4000/api/v1/status)" = "401"
+          curl -fs -H 'authorization: Bearer 0123456789abcdef0123456789abcdef' localhost:4000/api/v1/status > /dev/null
+
+      - name: Build and smoke-test the dashboard image
+        run: |
+          docker build -f apps/frontend/Dockerfile -t nomadio-dashboard:ci .
+          docker run -d --name dashboard -p 8080:80 nomadio-dashboard:ci
+          for i in $(seq 1 20); do curl -fs localhost:8080/ > /dev/null && break || sleep 1; done
+          curl -fs localhost:8080/ > /dev/null
+          curl -fs localhost:8080/config.json > /dev/null
+          # nginx must serve the page even with no collector to proxy to
+          test "$(curl -s -o /dev/null -w '%{http_code}' localhost:8080/api/v1/status)" = "502"

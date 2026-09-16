@@ -19,6 +19,8 @@ authInternalUsers:
       - action: read
       - action: api
       - action: metrics
+  # Overridden by MTX_AUTHINTERNALUSERS_1_USER / _PASS from .env; the values here
+  # are only the fallback for running this file directly.
   - user: nomad
     pass: change-me
     ips: []

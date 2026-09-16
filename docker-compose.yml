@@ -4,9 +4,10 @@ services:
   ingest:
     image: bluenviron/mediamtx:latest
     environment:
-      MTX_CONFPATH: /mediamtx.yml
-      INGEST_USER: ${INGEST_USER:-nomad}
-      INGEST_PASS: ${INGEST_PASS:-change-me}
+      # MediaMTX does not expand ${...} inside its config file; these MTX_ variables
+      # override the second authInternalUsers entry, which is the publisher.
+      MTX_AUTHINTERNALUSERS_1_USER: ${INGEST_USER:-nomad}
+      MTX_AUTHINTERNALUSERS_1_PASS: ${INGEST_PASS:?set INGEST_PASS in .env}
     volumes:
       - ./mediamtx.yml:/mediamtx.yml:ro
     ports:

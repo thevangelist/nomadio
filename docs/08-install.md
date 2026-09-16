@@ -17,6 +17,7 @@ small VPS. It runs two containers and, if you do not already have an ingest, a t
 git clone https://github.com/thevangelist/nomadio && cd nomadio
 cp .env.example .env
 openssl rand -hex 24          # paste into API_TOKEN, and again for TELEMETRY_TOKEN
+# INGEST_PASS has no default: compose refuses to start until you set one
 docker compose up -d --build  # or: podman compose up -d --build
 ```
 
