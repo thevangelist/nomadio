@@ -25,14 +25,40 @@ sells is the honest instrument panel across all of them, and once that panel exi
 the natural place to put the controls, the overlay and eventually the automation, because it is
 already the thing that knows the state of the whole chain.
 
+<p align="center">
+  <img src="docs/screenshot-mobile.png" alt="NomadIO on a phone" width="300">
+</p>
+
 ## Install and run
+
+Locally, on mock data, so you can see the whole thing before touching the rig:
 
 ```bash
 cp .env.example .env && npm install && npm run dev    # API :4000, dashboard :3000
 ```
 
-It starts on mock data, so you see the whole thing before touching the rig. Point it at your own
-ingest from the Setup tab.
+For a real rig, three pieces, and you can stop after any of them:
+
+```bash
+cp .env.example .env
+openssl rand -hex 24          # into API_TOKEN, and again into TELEMETRY_TOKEN
+docker compose up -d --build  # or podman compose
+```
+
+That runs MediaMTX receiving SRT on `:8890`, the backend reading its stats, and the dashboard on
+`:3000`. Point Larix or Moblin at `srt://<host>:8890?streamid=publish:live:<user>:<pass>`, and OBS
+at the same path to read it.
+
+To reach it from outside the house, put a Tailscale or Cloudflare tunnel in front. Do not
+port-forward. `API_TOKEN` becomes mandatory the moment anything outside the LAN can reach it, and
+a GitHub login is best handled by Cloudflare Access or Vercel Authentication rather than by code
+in here.
+
+The dashboard is a static bundle that reads its API address at runtime from `config.json`, so
+`vercel --prod` or any web server will do.
+
+Full walkthrough, including how to verify the stats fields before trusting the numbers:
+[docs/08-install.md](docs/08-install.md).
 
 ## Roadmap
 

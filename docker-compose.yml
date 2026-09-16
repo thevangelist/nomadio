@@ -1,9 +1,29 @@
 services:
+  # The thing that actually receives the phone's stream. OBS pulls from it,
+  # NomadIO reads its stats. Skip this service if you already run an ingest.
+  ingest:
+    image: bluenviron/mediamtx:latest
+    environment:
+      MTX_CONFPATH: /mediamtx.yml
+      INGEST_USER: ${INGEST_USER:-nomad}
+      INGEST_PASS: ${INGEST_PASS:-change-me}
+    volumes:
+      - ./mediamtx.yml:/mediamtx.yml:ro
+    ports:
+      - '8890:8890/udp'   # SRT
+      - '1935:1935'       # RTMP
+      - '9997:9997'       # stats API, read by the backend
+    restart: unless-stopped
+
   backend:
     build:
       context: .
       dockerfile: apps/backend/Dockerfile
     env_file: .env
+    environment:
+      STREAM_PROVIDER: ${STREAM_PROVIDER:-mediamtx}
+      MEDIAMTX_API_URL: ${MEDIAMTX_API_URL:-http://ingest:9997}
+    depends_on: [ingest]
     restart: unless-stopped
 
   dashboard:

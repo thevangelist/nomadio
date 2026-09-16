@@ -4,6 +4,8 @@ import Fastify from 'fastify';
 import { DeviceTelemetry } from '@nomadio/shared';
 import type { Config } from './config.js';
 import { createLogger } from './logger.js';
+import { authWarning } from './config.js';
+import { createAuthHook } from './auth.js';
 import { createNetworkProvider, createStreamProvider } from './providers/index.js';
 import { Collector } from './core/collector.js';
 import { DeviceRegistry } from './core/devices.js';
@@ -40,8 +42,14 @@ export async function buildApp(cfg: Config) {
   await fastify.register(cors, { origin: cfg.CORS_ORIGIN === '*' ? true : cfg.CORS_ORIGIN.split(',') });
   await fastify.register(websocket);
 
+  fastify.addHook('onRequest', createAuthHook(cfg));
+  const warning = authWarning(cfg);
+  if (warning) logger.warn(warning);
+
+  // Kept separate: the phone posts telemetry with its own token, which can be rotated on the
+  // device without touching the dashboard's.
   const authOk = (header: string | undefined) =>
-    !cfg.TELEMETRY_TOKEN || header === `Bearer ${cfg.TELEMETRY_TOKEN}`;
+    !cfg.TELEMETRY_TOKEN || header === `Bearer ${cfg.TELEMETRY_TOKEN}` || header === `Bearer ${cfg.API_TOKEN}`;
 
   fastify.get('/healthz', async () => ({ ok: true, uptimeSec: Math.round(process.uptime()) }));
   fastify.get('/readyz', async (_req, reply) => {

@@ -1,0 +1,16 @@
+# Minimal ingest for one publisher. SRT is the point: it survives a mobile link
+# that RTMP gives up on, and it is the only protocol that reports RTT and loss.
+logLevel: info
+api: yes
+apiAddress: :9997
+
+srt: yes
+srtAddress: :8890
+rtmp: yes
+rtmpAddress: :1935
+
+paths:
+  live:
+    # Set both in .env and keep them out of screenshots.
+    publishUser: ${INGEST_USER}
+    publishPass: ${INGEST_PASS}

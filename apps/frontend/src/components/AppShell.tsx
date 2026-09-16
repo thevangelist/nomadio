@@ -3,10 +3,9 @@ import { useUrlParam } from '@/lib/useUrlParam';
 import {
   Cog6ToothIcon,
   DevicePhoneMobileIcon,
-  GlobeAltIcon,
   PlayIcon,
   SignalIcon,
-  SparklesIcon,
+  WrenchScrewdriverIcon,
 } from '@heroicons/react/24/outline';
 import Tabs from './ui/Tabs';
 import QualityChart from './QualityChart';
@@ -20,22 +19,28 @@ import DevicesView from './views/DevicesView';
 import SettingsView from './views/SettingsView';
 import SetupView from './views/SetupView';
 
+/** Three targets in the thumb zone. Outdoors you need one glance, not six choices. */
 const TABS = [
   { id: 'monitor', label: 'Monitor', Icon: SignalIcon },
   { id: 'control', label: 'Control', Icon: PlayIcon },
-  { id: 'network', label: 'Network', Icon: GlobeAltIcon },
-  { id: 'devices', label: 'Devices', Icon: DevicePhoneMobileIcon },
-  { id: 'setup', label: 'Setup', Icon: SparklesIcon },
+  { id: 'rig', label: 'Rig', Icon: DevicePhoneMobileIcon },
+] as const;
+
+/** Reached from the app bar: read once during setup, not while walking. */
+const ASIDE = [
+  { id: 'setup', label: 'Setup', Icon: WrenchScrewdriverIcon },
   { id: 'settings', label: 'Settings', Icon: Cog6ToothIcon },
 ] as const;
 
-type Tab = (typeof TABS)[number]['id'];
+const ALL = [...TABS, ...ASIDE];
+
+type Tab = (typeof ALL)[number]['id'];
 
 export default function AppShell() {
   const { state, connection } = useDashboard();
   const history = useHistory(state);
   const [param, setParam] = useUrlParam('view');
-  const tab: Tab = (TABS.find((t) => t.id === param)?.id ?? 'monitor') as Tab;
+  const tab: Tab = (ALL.find((t) => t.id === param)?.id ?? 'monitor') as Tab;
   const setTab = (id: Tab) => setParam(id === 'monitor' ? null : id);
 
   useEffect(() => {
@@ -50,18 +55,31 @@ export default function AppShell() {
       <header className="appbar">
         <span className="brand">
           <img src="/logo.svg" alt="" width={13} height={22} />
-          NOMADIO
-          <span className="crumb">/ {TABS.find((t) => t.id === tab)!.label}</span>
+          NomadIO
+          <span className="crumb">{ALL.find((t) => t.id === tab)!.label}</span>
         </span>
-        <span className="status">
-          <i className={`dot ${connDot}`} />
-          <span className="mono">{state ? `${state.stream.state} · ${duration(state.session.durationMs)}` : connection}</span>
+        <span className="bar-right">
+          <span className="status">
+            <i className={`dot ${connDot}`} />
+            <span className="mono">{state ? duration(state.session.durationMs) : connection}</span>
+          </span>
+          {ASIDE.map((a) => (
+            <button
+              key={a.id}
+              className="bar-btn"
+              onClick={() => setTab(a.id)}
+              aria-label={a.label}
+              aria-pressed={tab === a.id}
+            >
+              <a.Icon className="glyph" aria-hidden />
+            </button>
+          ))}
         </span>
       </header>
 
       <main className="view">
         {state ? <QualityChart samples={history} /> : null}
-        {state ? <h1 className="view-title">{TABS.find((t) => t.id === tab)!.label}</h1> : null}
+        {state ? <h1 className="view-title">{ALL.find((t) => t.id === tab)!.label}</h1> : null}
         {!state ? (
           <>
             <h1>{connection === 'down' ? 'Backend unreachable' : 'Connecting'}</h1>
@@ -75,8 +93,12 @@ export default function AppShell() {
           <>
             {tab === 'monitor' && <MonitorView state={state} />}
             {tab === 'control' && <ControlView state={state} />}
-            {tab === 'network' && <NetworkView state={state} />}
-            {tab === 'devices' && <DevicesView state={state} />}
+            {tab === 'rig' && (
+              <>
+                <DevicesView state={state} />
+                <NetworkView state={state} />
+              </>
+            )}
             {tab === 'setup' && <SetupView state={state} />}
             {tab === 'settings' && <SettingsView />}
           </>

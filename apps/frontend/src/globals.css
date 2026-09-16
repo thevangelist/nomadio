@@ -55,12 +55,15 @@ body {
 @media (min-width: 720px) { .appbar .crumb { display: inline; } }
 
 .view { padding: var(--s6) var(--s4) var(--s8); display: grid; gap: var(--group-gap); max-width: 880px; margin: 0 auto; align-content: start; }
+/* Grid children default to min-width:auto, which lets a wide child push the
+   whole column past the viewport instead of wrapping. */
+.view > *, .grid > *, .card > * { min-width: 0; }
 .view-title { font: 700 24px/1.33 var(--font); margin: 0 0 var(--s1); }
 .view h1 { font: 700 24px/1.33 var(--font); margin: 0 0 var(--s1); }
 
 .nav {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
-  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
   background: var(--surface);
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -69,7 +72,8 @@ body {
   appearance: none; background: none; border: 0; cursor: pointer;
   min-height: var(--nav-h); padding: var(--s2) var(--s1);
   display: grid; gap: 3px; justify-items: center; align-content: center;
-  color: var(--muted); font: 500 11px/1.2 var(--font); letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted); font: 500 10px/1.2 var(--font); letter-spacing: 0.04em; text-transform: uppercase;
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .nav-tab[data-selected] { color: var(--text); box-shadow: inset 0 2px 0 var(--accent); }
 .nav .glyph { width: 20px; height: 20px; stroke-width: 1.6; }
@@ -81,7 +85,7 @@ body {
     grid-area: nav; position: sticky; top: var(--bar-h); align-self: start;
     grid-auto-flow: row; height: calc(100dvh - var(--bar-h));
   }
-  .nav-tab { justify-items: start; grid-auto-flow: column; justify-content: start; gap: var(--s2); padding: 0 var(--s4); }
+  .nav-tab { font-size: 13px; letter-spacing: 0.06em; justify-items: start; grid-auto-flow: column; justify-content: start; gap: var(--s2); padding: 0 var(--s4); }
   .nav-tab[data-selected] { box-shadow: inset 2px 0 0 var(--accent); background: var(--surface-2); }
   .view { grid-area: view; padding: var(--s8); gap: var(--s10); }
   .view-title { display: none; }
@@ -113,11 +117,13 @@ body {
 .banner h2 { margin: 0; font: 700 40px/1 var(--font); letter-spacing: 0.02em; color: var(--state, var(--text)); }
 .banner .meta { text-align: right; color: var(--muted); font-size: 14px; line-height: 1.43; font-variant-numeric: tabular-nums; }
 
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: var(--s6) var(--s4); }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s6) var(--s4); }
+@media (min-width: 560px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
 .metric { display: grid; gap: 2px; }
 .metric .label { font: 500 12px/1.33 var(--font); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-.metric .value { font: 500 26px/1.15 var(--font); font-variant-numeric: tabular-nums; margin-top: 2px; }
+.metric .value { font: 500 22px/1.15 var(--font); font-variant-numeric: tabular-nums; margin-top: 2px; }
+@media (min-width: 480px) { .metric .value { font-size: 26px; } }
 .metric .value.unknown { color: var(--idle); }
 .metric .value.warn { color: var(--warn); }
 .metric .value.crit { color: var(--crit); }
@@ -219,7 +225,7 @@ select, input[type='text'], input[type='number'] {
 .chart-now { font-size: 13px; color: var(--text); }
 .chart-svg { display: block; width: 100%; height: 72px; overflow: visible; }
 .chart-empty { height: 64px; }
-.chart-area { fill: color-mix(in oklab, var(--accent) 22%, transparent); }
+.chart-area { fill: color-mix(in oklab, var(--accent) 10%, transparent); }
 .chart-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; }
 .chart-band { fill: color-mix(in oklab, var(--crit) 28%, transparent); }
 .chart-foot { display: flex; justify-content: space-between; font-size: 11px; color: var(--idle); margin-top: 2px; }
@@ -256,3 +262,11 @@ select, input[type='text'], input[type='number'] {
   .view { max-width: 2200px; }
   body { font-size: 17px; }
 }
+
+.bar-right { display: flex; align-items: center; gap: var(--s3); }
+.bar-btn {
+  appearance: none; background: none; border: 0; cursor: pointer; color: var(--muted);
+  width: 44px; height: 44px; display: grid; place-items: center;
+}
+.bar-btn[aria-pressed='true'] { color: var(--text); }
+.bar-btn .glyph { width: 20px; height: 20px; stroke-width: 1.6; }

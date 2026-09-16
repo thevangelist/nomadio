@@ -41,7 +41,7 @@ export default function QualityChart({ samples }: { samples: Sample[] }) {
       <div className="chart-head">
         <span className="label">Quality over time</span>
         <span className="chart-now mono">
-          {mbps(latest.bitrateKbps)} · peak {mbps(peak)}
+          {mbps(latest.bitrateKbps)}&ensp;peak {mbps(peak)}
         </span>
       </div>
       <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="chart-svg" role="img" aria-label="Bitrate over time">

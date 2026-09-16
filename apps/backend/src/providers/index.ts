@@ -1,5 +1,6 @@
 import type { StreamSnapshot } from '@nomadio/shared';
 import type { Config } from '../config.js';
+import { MediaMtxStreamProvider } from './stream/mediamtx.js';
 import { MockStreamProvider } from './stream/mock.js';
 import { NginxRtmpStreamProvider } from './stream/nginxRtmp.js';
 import { SrtStreamProvider } from './stream/srt.js';
@@ -8,6 +9,8 @@ import type { NetworkProvider, StreamProvider } from './types.js';
 
 export function createStreamProvider(cfg: Config): StreamProvider {
   switch (cfg.STREAM_PROVIDER) {
+    case 'mediamtx':
+      return new MediaMtxStreamProvider(cfg.MEDIAMTX_API_URL!, cfg.STREAM_APP);
     case 'srt':
       return new SrtStreamProvider(cfg.SRT_STATS_URL!, cfg.STREAM_KEY);
     case 'nginx-rtmp':

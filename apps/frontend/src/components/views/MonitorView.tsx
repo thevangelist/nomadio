@@ -40,7 +40,12 @@ export default function MonitorView({ state }: { state: DashboardState }) {
         <Metric label="FPS" value={fmt(stream.fps, 'fps')} caption="published" />
         <Metric label="Upload" value={mbps(stream.uploadKbps)} caption="what arrived" />
         <Metric label="Latency" value={fmt(stream.latencyMs, 'ms')} caption="RTT" />
-        <Metric label="Packet loss" value={fmt(stream.packetLossPct, '%', 2)} caption="SRT only" tone="warn" />
+        <Metric
+          label="Packet loss"
+          value={fmt(stream.packetLossPct, '%', 2)}
+          caption="SRT only"
+          tone={stream.packetLossPct !== null && stream.packetLossPct > 1 ? 'warn' : undefined}
+        />
         <Metric label="Dropped" value={fmt(stream.droppedFrames, '')} caption="frames" />
       </div>
 
