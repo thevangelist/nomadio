@@ -1,0 +1,11 @@
+{
+  "name": "nomadio",
+  "private": true,
+  "workspaces": ["packages/*", "apps/*"],
+  "scripts": {
+    "dev": "npm run dev --workspace=@nomadio/backend & npm run dev --workspace=@nomadio/frontend",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspace=@nomadio/backend",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  }
+}
