@@ -47,6 +47,10 @@ counter and RTT and loss stay `—`, which is the honest answer rather than a ze
 | GPS / altitude / distance | Shortcuts can post current location; continuous tracking needs a native app with background location |
 | Remote start of the encoder | Not possible from a web dashboard. Larix Broadcaster advertises MQTT-based remote control — **VERIFY** before relying on it |
 
+Location is filtered on the way out of the collector, not in the browser: at `off` the field is
+null before it reaches the API, and at `coarse` it is rounded server-side. A client cannot ask
+for more precision than the setting allows.
+
 ## Speedify (V2)
 
 - There is **no cloud/public REST API**. The only programmatic surface is the local

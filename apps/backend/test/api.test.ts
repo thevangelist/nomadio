@@ -77,20 +77,16 @@ describe('realtime', () => {
     const socket = new WebSocket(`ws://127.0.0.1:${port}/api/realtime`);
 
     const frame = await new Promise<{ type: string }>((resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error('no frame in 4s')), 4000);
-      socket.on('message', (data) => {
-        clearTimeout(timer);
-        resolve(JSON.parse(String(data)) as { type: string });
-      });
-      socket.on('error', (err) => {
-        clearTimeout(timer);
-        reject(err);
-      });
+      socket.on('message', (data) => resolve(JSON.parse(String(data)) as { type: string }));
+      socket.on('error', reject);
+      socket.on('close', () => reject(new Error('socket closed before a frame arrived')));
     });
     socket.close();
 
     expect(frame.type).toBe('state');
-  });
+    // No self-imposed deadline: vitest owns the timeout, so a slow machine reports
+    // "test timed out" instead of a misleading "no frame in 4s".
+  }, 15_000);
 });
 
 describe('auth', () => {

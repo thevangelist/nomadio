@@ -35,7 +35,9 @@ Browser-source overlay page served by the backend: distance, elevation gain, alt
 elapsed time, battery, network state — fed by device telemetry.
 Exact GPS is **off by default**; `privacy.exposeLocation` has three levels: `off`,
 `coarse` (region/place name only) and `precise`. `off` is the shipped default and the overlay
-must be correct and useful at `off`.
+must be correct and useful at `off`. `coarse` is implemented: coordinates are rounded to one
+decimal degree, roughly eleven kilometres, and the accuracy figure is dropped so the rounding
+cannot be undone.
 
 ## V5 — Reliability automation
 
