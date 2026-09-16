@@ -12,6 +12,7 @@ import QualityChart from './QualityChart';
 import { useHistory } from '@/lib/useHistory';
 import { useDashboard } from '@/lib/useDashboard';
 import { duration } from '@/lib/format';
+import { base } from '@/lib/api';
 import MonitorView from './views/MonitorView';
 import ControlView from './views/ControlView';
 import NetworkView from './views/NetworkView';
@@ -81,14 +82,26 @@ export default function AppShell() {
         {state ? <QualityChart samples={history} /> : null}
         {state ? <h1 className="view-title">{ALL.find((t) => t.id === tab)!.label}</h1> : null}
         {!state ? (
-          <>
-            <h1>{connection === 'down' ? 'Backend unreachable' : 'Connecting'}</h1>
-            <p className="note">
-              {connection === 'down'
-                ? 'No telemetry source. The monitor is down, which says nothing about the stream itself.'
-                : 'Waiting for the first snapshot.'}
-            </p>
-          </>
+          <div className="empty">
+            <h1 className={connection === 'down' ? 'crit-text' : undefined}>
+              {connection === 'down' ? 'No API' : 'Connecting'}
+            </h1>
+            {connection === 'down' ? (
+              <>
+                <p className="note">
+                  The dashboard is running but nothing answered at{' '}
+                  <span className="mono">{base() || location.origin}/api/v1/status</span>. This page is a static
+                  bundle; the collector runs next to your ingest.
+                </p>
+                <p className="note">
+                  Point it at that machine by editing <span className="mono">config.json</span>, or open the
+                  dashboard the collector serves itself. Nothing here says anything about your stream.
+                </p>
+              </>
+            ) : (
+              <p className="note">Waiting for the first snapshot.</p>
+            )}
+          </div>
         ) : (
           <>
             {tab === 'monitor' && <MonitorView state={state} />}

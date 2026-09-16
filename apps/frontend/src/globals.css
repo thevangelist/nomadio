@@ -270,3 +270,6 @@ select, input[type='text'], input[type='number'] {
 }
 .bar-btn[aria-pressed='true'] { color: var(--text); }
 .bar-btn .glyph { width: 20px; height: 20px; stroke-width: 1.6; }
+
+.empty { display: grid; gap: var(--s3); max-width: 42ch; padding: var(--s8) 0; }
+.empty h1 { font-size: 32px; margin: 0; }

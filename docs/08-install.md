@@ -89,6 +89,13 @@ Then edit `public/config.json` (or a Vercel rewrite) to point at the tunnel:
 { "apiBase": "https://nomadio.your-tunnel.example" }
 ```
 
+**Vercel's own SSO breaks PWA install.** Deployment Protection redirects every request to
+`vercel.com/sso-api`, which is a different origin, so the browser's `manifest.webmanifest` and
+service-worker fetches fail CORS and the page cannot be installed to the home screen. The login
+itself works; only the PWA parts do not. Put the dashboard behind **Cloudflare Access** on your
+own hostname instead — the session cookie is first-party there, so the manifest loads and the app
+installs. Or keep Vercel for a desktop tab and use the collector's own nginx for the phone.
+
 On Vercel Pro, two things are worth doing: put the project behind **Vercel Authentication** so the
 dashboard is not public, and add a **rewrite** from `/api/:path*` to the tunnel host. That makes
 the dashboard same-origin with its API, so `apiBase` stays empty, no CORS is involved and the
