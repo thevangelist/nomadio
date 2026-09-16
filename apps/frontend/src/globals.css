@@ -227,7 +227,7 @@ select, input[type='text'], input[type='number'] {
 .chart-empty { height: 64px; }
 .chart-area { fill: color-mix(in oklab, var(--accent) 10%, transparent); }
 .chart-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; }
-.chart-band { fill: color-mix(in oklab, var(--crit) 28%, transparent); }
+.chart-band { fill: color-mix(in oklab, var(--crit) 14%, transparent); }
 .chart-foot { display: flex; justify-content: space-between; font-size: 11px; color: var(--idle); margin-top: 2px; }
 
 /* ---- scales up into a portal on big screens ---- */

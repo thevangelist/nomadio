@@ -20,6 +20,7 @@ export default function QualityChart({ samples }: { samples: Sample[] }) {
 
   const values = samples.map((s) => s.bitrateKbps ?? 0);
   const peak = Math.max(...values, 1);
+  const everLive = samples.some((s) => s.live);
   const x = (i: number) => (i / (samples.length - 1)) * W;
   const y = (v: number) => H - (v / peak) * (H - 4) - 2;
 
@@ -41,15 +42,21 @@ export default function QualityChart({ samples }: { samples: Sample[] }) {
       <div className="chart-head">
         <span className="label">Quality over time</span>
         <span className="chart-now mono">
-          {mbps(latest.bitrateKbps)}&ensp;peak {mbps(peak)}
+          {everLive ? (
+            <>
+              {mbps(latest.bitrateKbps)}&ensp;peak {mbps(peak)}
+            </>
+          ) : (
+            'no stream yet'
+          )}
         </span>
       </div>
       <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="chart-svg" role="img" aria-label="Bitrate over time">
         {bands.map(([a, b]) => (
           <rect key={a} x={x(a)} y={0} width={Math.max(x(b) - x(a), 2)} height={H} className="chart-band" />
         ))}
-        <path d={area} className="chart-area" />
-        <path d={line} className="chart-line" vectorEffect="non-scaling-stroke" />
+        {everLive ? <path d={area} className="chart-area" /> : null}
+        {everLive ? <path d={line} className="chart-line" vectorEffect="non-scaling-stroke" /> : null}
       </svg>
       <div className="chart-foot">
         <span>{Math.round((samples.length * 1) / 60)} min</span>
