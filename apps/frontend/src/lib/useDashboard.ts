@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { DashboardState, WsMessage } from '@nomadio/shared';
 import { fetchState, Unauthorized, wsUrl } from './api';
 
@@ -11,11 +11,18 @@ export type Connection = 'connecting' | 'live' | 'polling' | 'down' | 'unauthori
 export function useDashboard() {
   const [state, setState] = useState<DashboardState | null>(null);
   const [connection, setConnection] = useState<Connection>('connecting');
+  const [attempt, setAttempt] = useState(0);
   const socketRef = useRef<WebSocket | null>(null);
+
+  /** Called after a token is entered: retrying is pointless until something changes. */
+  const retry = useCallback(() => {
+    setConnection('connecting');
+    setAttempt((n) => n + 1);
+  }, []);
 
   useEffect(() => {
     let disposed = false;
-    let retry: ReturnType<typeof setTimeout>;
+    let retryTimer: ReturnType<typeof setTimeout>;
     let poll: ReturnType<typeof setInterval> | null = null;
 
     const startPolling = () => {
@@ -29,7 +36,16 @@ export function useDashboard() {
           })
           .catch((err) => {
             if (disposed) return;
-            setConnection(err instanceof Unauthorized ? 'unauthorized' : 'down');
+            if (err instanceof Unauthorized) {
+              // No amount of retrying produces a token. Stop until the user supplies one.
+              setConnection('unauthorized');
+              disposed = true;
+              stopPolling();
+              clearTimeout(retryTimer);
+              socketRef.current?.close();
+              return;
+            }
+            setConnection('down');
           });
       run();
       poll = setInterval(run, 3000);
@@ -57,7 +73,7 @@ export function useDashboard() {
         if (disposed) return;
         setConnection('polling');
         startPolling();
-        retry = setTimeout(connect, 2000);
+        retryTimer = setTimeout(connect, 2000);
       };
       socket.onerror = () => socket.close();
     };
@@ -67,11 +83,11 @@ export function useDashboard() {
 
     return () => {
       disposed = true;
-      clearTimeout(retry);
+      clearTimeout(retryTimer);
       stopPolling();
       socketRef.current?.close();
     };
-  }, []);
+  }, [attempt]);
 
-  return { state, connection };
+  return { state, connection, retry };
 }

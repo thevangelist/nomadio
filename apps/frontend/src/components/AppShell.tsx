@@ -12,7 +12,7 @@ import QualityChart from './QualityChart';
 import { useHistory } from '@/lib/useHistory';
 import { useDashboard } from '@/lib/useDashboard';
 import { duration } from '@/lib/format';
-import { base } from '@/lib/api';
+import { base, setToken } from '@/lib/api';
 import MonitorView from './views/MonitorView';
 import ControlView from './views/ControlView';
 import NetworkView from './views/NetworkView';
@@ -38,7 +38,7 @@ const ALL = [...TABS, ...ASIDE];
 type Tab = (typeof ALL)[number]['id'];
 
 export default function AppShell() {
-  const { state, connection } = useDashboard();
+  const { state, connection, retry } = useDashboard();
   const history = useHistory(state);
   const [param, setParam] = useUrlParam('view');
   const tab: Tab = (ALL.find((t) => t.id === param)?.id ?? 'monitor') as Tab;
@@ -87,10 +87,23 @@ export default function AppShell() {
               {connection === 'unauthorized' ? 'Token required' : connection === 'down' ? 'No API' : 'Connecting'}
             </h1>
             {connection === 'unauthorized' ? (
-              <p className="note">
-                The collector rejected this device. Open the dashboard once with{' '}
-                <span className="mono">?token=&lt;your API_TOKEN&gt;</span>, or paste it under Settings.
-              </p>
+              <>
+                <p className="note">
+                  The collector rejected this device, so polling stopped. Open the dashboard once with{' '}
+                  <span className="mono">?token=&lt;your API_TOKEN&gt;</span>, or paste it below.
+                </p>
+                <div className="btn-row">
+                  <input
+                    type="password"
+                    placeholder="API token"
+                    style={{ flex: 1, minWidth: 140 }}
+                    onChange={(e) => setToken(e.target.value)}
+                  />
+                  <button className="btn primary" onClick={retry}>
+                    Connect
+                  </button>
+                </div>
+              </>
             ) : null}
             {connection === 'down' ? (
               <>

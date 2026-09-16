@@ -11,6 +11,8 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
+    // A tunnel arrives with a hostname Vite has never heard of.
+    allowedHosts: ['.trycloudflare.com'],
     proxy: { '/api': { target: 'http://localhost:4000', ws: true } },
   },
   preview: { port: 3000, host: true },
