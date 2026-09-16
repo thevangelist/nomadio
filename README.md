@@ -47,6 +47,7 @@ Against a real rig:
 ```bash
 cp .env.example .env
 openssl rand -hex 24          # into API_TOKEN, and again into TELEMETRY_TOKEN
+# set INGEST_PASS too — compose refuses to start without one
 docker compose up -d --build  # or podman compose
 ```
 
