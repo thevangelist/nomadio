@@ -22,7 +22,7 @@
                                     │ WS /ws        │ REST /api/v1
                                     ▼               ▼
                             ┌───────────────────────────────┐
-                            │ Next.js dashboard (phone-first)│
+                            │ React + Vite dashboard PWA     │
                             └───────────────────────────────┘
 ```
 

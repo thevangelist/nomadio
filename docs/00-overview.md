@@ -37,7 +37,7 @@ phone-friendly dashboard.
 
 ```
 apps/backend    Node + TypeScript collector, REST + WebSocket
-apps/frontend   Next.js dashboard (mobile-first)
+apps/frontend   React + Vite dashboard PWA (mobile-first)
 packages/shared Types + zod schemas shared by both
 docs            This documentation
 ```

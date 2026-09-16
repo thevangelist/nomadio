@@ -39,9 +39,12 @@ to keep correct for no operational gain.
 
 ```css
 --r-sm: 3px;   /* anything you press or type into */
---r-md: 7px;   /* anything that holds content */
+--r-md: 7px;   /* anything that genuinely floats above the page */
 corner-shape: squircle;   /* Chrome 139+; elsewhere the plain radius, which is correct too */
 ```
+
+Cards, banners and alerts have no border and therefore no corner to round. Radius applies to
+controls and to the select popup — the only things with an edge of their own.
 
 ## Type
 
