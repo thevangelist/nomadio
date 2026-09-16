@@ -47,7 +47,7 @@ export class MediaMtxStreamProvider implements StreamProvider {
       fps: null, // MediaMTX reports tracks and codecs, not a frame rate
       droppedFrames: pick(pathInfo, 'inboundFramesInError'),
       uploadKbps: srtKbps ?? bitrateKbps,
-      latencyMs: srt ? pick(srt, 'msRTT') : null,
+      latencyMs: round(srt ? pick(srt, 'msRTT') : null),
       packetLossPct: lossPct(lost, received),
       publisherSince: readyTime(pathInfo['readyTime']),
       source: this.id,
@@ -70,7 +70,9 @@ export class MediaMtxStreamProvider implements StreamProvider {
     const list = await this.get<Json>('/v3/srtconns/list');
     const items = list?.['items'];
     if (!Array.isArray(items)) return null;
-    return (items as Json[]).find((c) => c['path'] === this.path) ?? null;
+    // Idle connections carry an empty path and all-zero counters; taking one would
+    // report a live stream as 0 kbps.
+    return (items as Json[]).find((c) => c['path'] === this.path && c['state'] === 'publish') ?? null;
   }
 
   private async get<T>(path: string): Promise<T | null> {
@@ -85,6 +87,8 @@ export class MediaMtxStreamProvider implements StreamProvider {
 }
 
 const mbpsToKbps = (v: number | null) => (v === null ? null : Math.round(v * 1000));
+
+const round = (v: number | null) => (v === null ? null : Math.round(v * 10) / 10);
 
 const lossPct = (lost: number | null, received: number | null): number | null => {
   if (lost === null || received === null || received <= 0) return null;

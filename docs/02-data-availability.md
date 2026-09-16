@@ -20,6 +20,22 @@ device/app version before being built.
 **Not available:** per-viewer quality, true available uplink bandwidth, anything from inside
 Larix/Moblin over HTTP. Mobile encoder apps do not expose a local stats API.
 
+## MediaMTX (verified against v1.21.0, 2026-09-16)
+
+Confirmed live against a real iPhone publisher over SRT, so these are not doc-derived guesses:
+
+- `GET /v3/paths/get/live` → `ready`, `readyTime`, `bytesReceived`, `inboundBytes`,
+  `inboundFramesInError`. No frame rate anywhere, so FPS stays `—` with this provider.
+- `GET /v3/srtconns/list` → `mbpsReceiveRate`, `msRTT`, `packetsReceived`, `packetsReceivedLoss`,
+  `packetsReceivedLossRate`, `packetsReceivedDrop`, `msReceiveTsbPdDelay`, `mbpsLinkCapacity`.
+- Connections appear with `state: idle` and an empty `path` before publishing starts; their
+  counters are all zero, so the provider matches on `path` **and** `state === 'publish'`.
+- The API refuses requests from outside localhost unless `authInternalUsers` grants the `api`
+  action.
+
+An RTMP publisher produces none of the SRT fields. Bitrate is then integrated from the byte
+counter and RTT and loss stay `—`, which is the honest answer rather than a zero.
+
 ## iPhone 16
 
 | Value | Reality |

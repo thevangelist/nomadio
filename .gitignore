@@ -8,3 +8,5 @@ dist
 .vercel
 *.tsbuildinfo
 next-env.d.ts
+
+mediamtx.local.yml

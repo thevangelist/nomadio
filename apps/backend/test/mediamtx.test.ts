@@ -29,11 +29,14 @@ describe('MediaMtxStreamProvider', () => {
     respond({
       '/v3/paths/get/live': { ready: true, bytesReceived: 1000, readyTime: '2026-09-16T10:00:00Z' },
       '/v3/srtconns/list': {
-        items: [{ path: 'live', mbpsReceiveRate: 5.4, msRTT: 42, packetsReceivedLoss: 5, packetsReceived: 995 }],
+        items: [
+          { path: '', state: 'idle', mbpsReceiveRate: 0, msRTT: 0, packetsReceived: 0 },
+          { path: 'live', state: 'publish', mbpsReceiveRate: 5.4, msRTT: 42.06, packetsReceivedLoss: 5, packetsReceived: 995 },
+        ],
       },
     });
     const snap = await new MediaMtxStreamProvider('http://ingest:9997', 'live').poll();
-    expect(snap).toMatchObject({ state: 'LIVE', bitrateKbps: 5400, latencyMs: 42, packetLossPct: 0.5 });
+    expect(snap).toMatchObject({ state: 'LIVE', bitrateKbps: 5400, latencyMs: 42.1, packetLossPct: 0.5 });
     expect(snap.publisherSince).toBe(Date.parse('2026-09-16T10:00:00Z'));
   });
 
