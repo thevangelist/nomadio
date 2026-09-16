@@ -7,6 +7,19 @@
 You can't watch your own stream while you're in it. NomadIO watches from the receiving end and
 answers, on your phone: am I live, is it good, what broke.
 
+## Documentation
+
+* [Overview](docs/00-overview.md) — the hardware in scope and the rules the whole thing follows
+* [Architecture](docs/01-architecture.md) — where each piece runs, and the seams left for later versions
+* [Data availability](docs/02-data-availability.md) — what every device and API really exposes, and what it does not
+* [Control surface](docs/03-control-surface.md) — what can be controlled from the phone, and what has to be done by hand
+* [Roadmap](docs/04-roadmap.md) — the build order behind the five phases above
+* [Brand](docs/05-brand.md) — the name, the mark, the voice
+* [Design notes](docs/06-design-notes.md) — why this differs from the original sketch, and what was taken from Owncast
+* [Design system](docs/07-design-system.md) — tokens, contrast measurements, component choices
+* [Install](docs/08-install.md) — ingest, tunnel, login and the phone, step by step
+* [DESIGN.md](DESIGN.md) — the short version of the design system, at the root
+
 ## Why it's worth building
 
 A dropped IRL stream costs the audience twice. The viewers who leave during the dead minutes
@@ -106,19 +119,6 @@ so it cannot drift, and one provider per vendor so Speedify, OBS and YouTube are
 docker compose up --build     # or podman compose
 npm test && npm run typecheck
 ```
-
-## Documentation
-
-* [Overview](docs/00-overview.md) — the hardware in scope and the rules the whole thing follows
-* [Architecture](docs/01-architecture.md) — where each piece runs, and the seams left for later versions
-* [Data availability](docs/02-data-availability.md) — what every device and API really exposes, and what it does not
-* [Control surface](docs/03-control-surface.md) — what can be controlled from the phone, and what has to be done by hand
-* [Roadmap](docs/04-roadmap.md) — the build order behind the five phases above
-* [Brand](docs/05-brand.md) — the name, the mark, the voice
-* [Design notes](docs/06-design-notes.md) — why this differs from the original sketch, and what was taken from Owncast
-* [Design system](docs/07-design-system.md) — tokens, contrast measurements, component choices
-* [Install](docs/08-install.md) — ingest, tunnel, login and the phone, step by step
-* [DESIGN.md](DESIGN.md) — the short version of the design system, at the root
 
 ## License
 
