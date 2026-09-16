@@ -39,3 +39,26 @@ class, so a store slots in under them when session history becomes a feature.
 - **Power budget view.** Phone battery slope + known power bank capacity gives an honest
   "hours of stream left" estimate without any new hardware API. Good V4 candidate.
 - **A second, dedicated streaming phone.** Already supported: telemetry is keyed by `deviceId`.
+
+## Borrowed from Owncast
+
+Read after the first real stream, and taken selectively — Owncast solves a different problem
+(a server transcoding for many viewers), so most of its metrics work does not apply.
+
+**Confirm before shouting.** Owncast keeps an alerting flag per condition and suppresses
+re-alerting for a fixed window rather than firing on every sample. Our rules re-evaluated at
+1 Hz and would flap on a jittery uplink, so each rule now has a confirmation count: raise after
+three consecutive samples, clear after three. State rules — offline, connecting, no telemetry,
+link down — answer a yes/no question and keep a count of one, because a stream that has stopped
+should say so in the same second.
+
+**Judge the window, not the sample.** Owncast averages the last values before alerting. Our own
+first real capture proved why: the ingest reports a per-second receive rate that saws between
+0.9 and 1.7 Mbps on an adaptive encoder, which would have flickered a warning on and off every
+other second. Threshold rules now read the median of a five-sample window, while the dashboard
+still plots every raw sample.
+
+Not taken: Prometheus exposition, viewer and playback metrics, CPU/RAM/disk alerting (they
+transcode, we do not), and the healthy-percentage model, which needs a population of viewers
+rather than one publisher. Their timestamped-value series over an embedded time-series store is
+the right shape for persistence when we get there.
